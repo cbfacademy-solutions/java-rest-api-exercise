@@ -2,55 +2,42 @@ package com.cbfacademy.restapiexercise.ious;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 /**
- * Service class to manage IOU objects using in-memory List-based storage.
+ * Service class to manage IOU objects.
  */
 @Service
 public class ListIOUService implements IOUService {
+    private final IOURepository repository;
 
-    private final List<IOU> ious = new ArrayList<>();
+    public ListIOUService (IOURepository iouRepository) {
+        this.repository = iouRepository;
+    }
 
     @Override
     public List<IOU> getAllIOUs() {
-        return ious;
+        return repository.retrieveAll();
     }
 
     @Override
     public IOU getIOU(UUID id) {
-        return ious.stream()
-                .filter(iou -> iou.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        return repository.retrieve(id);
     }
 
     @Override
     public IOU createIOU(IOU iou) {
-        ious.add(iou);
-
-        return iou;
+        return repository.create(iou);
     }
 
     @Override
     public IOU updateIOU(UUID id, IOU updatedIOU) {
-        for (int i = 0; i < ious.size(); i++) {
-            IOU iou = ious.get(i);
-
-            if (iou.getId().equals(id)) {
-                ious.set(i, updatedIOU);
-
-                return updatedIOU;
-            }
-        }
-
-        return null;
+        return repository.update(updatedIOU);
     }
 
     @Override
     public boolean deleteIOU(UUID id) {
-        return ious.removeIf(iou -> iou.getId().equals(id));
+        return repository.delete(id);
     }
 }
