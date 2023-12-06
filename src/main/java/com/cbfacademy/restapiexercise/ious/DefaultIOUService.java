@@ -9,10 +9,10 @@ import java.util.UUID;
  * Service class to manage IOU objects.
  */
 @Service
-public class ListIOUService implements IOUService {
+public class DefaultIOUService implements IOUService {
     private final IOURepository repository;
 
-    public ListIOUService (IOURepository iouRepository) {
+    public DefaultIOUService (IOURepository iouRepository) {
         this.repository = iouRepository;
     }
 
