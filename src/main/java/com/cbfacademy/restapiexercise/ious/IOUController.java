@@ -63,7 +63,11 @@ public class IOUController {
     public ResponseEntity<IOU> createIOU(@RequestBody IOU iou) {
         IOU createdIOU = iouService.createIOU(iou);
 
-        return new ResponseEntity<>(createdIOU, HttpStatus.CREATED);
+        if (iou != null) {
+            return new ResponseEntity<>(createdIOU, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
