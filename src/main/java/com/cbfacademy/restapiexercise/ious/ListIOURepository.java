@@ -2,8 +2,8 @@ package com.cbfacademy.restapiexercise.ious;
 
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-import java.time.Instant;
+import com.cbfacademy.restapiexercise.core.PersistenceException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,60 +16,111 @@ import java.util.stream.Collectors;
 public class ListIOURepository implements IOURepository {
     private List<IOU> ious = new ArrayList<IOU>();
 
-    public void createIOUs() {
-        ious = List.of(
-                new IOU("Borrower1", "Lender1", BigDecimal.valueOf(1000), Instant.now()),
-                new IOU("Borrower2", "Lender2", BigDecimal.valueOf(500), Instant.now()),
-                new IOU("Borrower3", "Lender3", BigDecimal.valueOf(30), Instant.now()));
-    }
-
     @Override
     public List<IOU> retrieveAll() {
-        return ious;
+        try {
+            return ious;
+        } catch (RuntimeException exception) {
+            throw new PersistenceException("Cannot retrieve IOUs");
+        }
     }
 
     @Override
     public IOU retrieve(UUID id) {
-        return ious.stream()
-                .filter(iou -> iou.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        validate(id);
+
+        try {
+            return ious.stream()
+                    .filter(iou -> iou.getId().equals(id))
+                    .findFirst()
+                    .orElse(null);
+        } catch (RuntimeException exception) {
+            throw new PersistenceException("Cannot retrieve IOU");
+        }
     }
 
     @Override
     public List<IOU> searchByBorrower(String name) {
-        return ious.stream().filter(x -> x.getBorrower().startsWith(name)).collect(Collectors.toList());
+        validate(name);
+
+        try {
+            return ious.stream().filter(x -> x.getBorrower().startsWith(name)).collect(Collectors.toList());
+        } catch (RuntimeException exception) {
+            throw new PersistenceException("Cannot search IOUs");
+        }
     }
 
     @Override
     public List<IOU> searchByLender(String name) {
-        return ious.stream().filter(x -> x.getLender().startsWith(name)).collect(Collectors.toList());
+        validate(name);
+
+        try {
+            return ious.stream().filter(x -> x.getLender().startsWith(name)).collect(Collectors.toList());
+        } catch (RuntimeException exception) {
+            throw new PersistenceException("Cannot search IOUs");
+        }
     }
 
     @Override
     public IOU create(IOU iou) {
-        ious.add(iou);
+        validate(iou);
 
-        return iou;
+        try {
+            ious.add(iou);
+
+            return iou;
+        } catch (RuntimeException exception) {
+            throw new PersistenceException("Cannot create IOU");
+        }
     }
 
     @Override
-    public Boolean delete(UUID id) {
-        return ious.removeIf(iou -> iou.getId().equals(id));
+    public void delete(IOU iou) {
+        validate(iou);
+
+        try {
+            ious.removeIf(currentIou -> iou.getId().equals(currentIou.getId()));
+        } catch (RuntimeException exception) {
+            throw new PersistenceException("Cannot delete IOU");
+        }
     }
 
     @Override
-    public IOU update(IOU updatedIOU) {
-        for (int i = 0; i < ious.size(); i++) {
-            IOU iou = ious.get(i);
+    public IOU update(IOU iou) {
+        validate(iou);
 
-            if (iou.getId().equals(updatedIOU.getId())) {
-                ious.set(i, updatedIOU);
+        try {
+            for (int i = 0; i < ious.size(); i++) {
+                IOU currentIOU = ious.get(i);
 
-                return updatedIOU;
+                if (currentIOU.getId().equals(iou.getId())) {
+                    ious.set(i, iou);
+
+                    return iou;
+                }
             }
+        } catch (RuntimeException exception) {
+            throw new PersistenceException("Cannot update IOU");
         }
 
-        return null;
+        throw new PersistenceException("Cannot update IOU");
+    }
+
+    protected void validate(IOU iou) throws IllegalArgumentException {
+        if (iou == null) {
+            throw new IllegalArgumentException("IOU cannot be null");
+        }
+    }
+
+    protected void validate(UUID id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+    }
+
+    protected void validate(String name) throws IllegalArgumentException {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
     }
 }

@@ -45,11 +45,7 @@ public class IOUController {
     public ResponseEntity<IOU> getIOU(@PathVariable UUID id) {
         IOU iou = iouService.getIOU(id);
 
-        if (iou != null) {
-            return new ResponseEntity<>(iou, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(iou, HttpStatus.OK);
     }
 
     /**
@@ -63,11 +59,7 @@ public class IOUController {
     public ResponseEntity<IOU> createIOU(@RequestBody IOU iou) {
         IOU createdIOU = iouService.createIOU(iou);
 
-        if (iou != null) {
-            return new ResponseEntity<>(createdIOU, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(createdIOU, HttpStatus.CREATED);
     }
 
     /**
@@ -83,11 +75,7 @@ public class IOUController {
     public ResponseEntity<IOU> updateIOU(@PathVariable UUID id, @RequestBody IOU updatedIOU) {
         IOU iou = iouService.updateIOU(id, updatedIOU);
 
-        if (iou != null) {
-            return new ResponseEntity<>(iou, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(iou, HttpStatus.OK);
     }
 
     /**
@@ -100,12 +88,8 @@ public class IOUController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteIOU(@PathVariable UUID id) {
-        boolean deleted = iouService.deleteIOU(id);
+        iouService.deleteIOU(id);
 
-        if (deleted) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
