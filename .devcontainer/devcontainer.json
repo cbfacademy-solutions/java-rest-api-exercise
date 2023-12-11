@@ -8,17 +8,14 @@
 	"features": {
 		"ghcr.io/devcontainers/features/java:1": {
 			"version": "none",
-			"installMaven": true,
+			"installMaven": false,
 			"installGradle": "false"
 		},
 		"ghcr.io/devcontainers-contrib/features/ant-sdkman:2": {}
 	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	//"forwardPorts": [],
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "echo \"This file was added by the postCreateCommand.\" > TEMP.md",
+	"forwardPorts": [8080],
 
 	// Configure tool-specific properties.
 	  "customizations": {
@@ -26,7 +23,8 @@
 		"vscode": {
 		  // Add the IDs of extensions you want installed when the container is created.
 		  "extensions": [
-			"vscjava.vscode-java-pack"
+			"vscjava.vscode-java-pack",
+			"esbenp.prettier-vscode"
 		  ]
 		}
 	  }
