@@ -1,16 +1,19 @@
 package com.cbfacademy.restapiexercise.core;
 
-import java.io.Serializable;
-import java.util.List;
+import java.util.Optional;
 
-public interface Repository<T, ID extends Serializable> {
+/**
+ * Simplified, partial implementation of the {@link org.springframework.data.repository.CrudRepository} interface
+ * @see <a href="https://docs.spring.io/spring-data/data-commons/docs/1.6.1.RELEASE/reference/html/repositories.html#repositories.definition-tuning">Repository docs</a>
+ */
+public interface Repository<T, ID> extends org.springframework.data.repository.Repository<T, ID> {
 
     /**
      * Retrieves all entities from the repository.
      *
      * @return a list of all entities
      */
-    List<T> retrieveAll() throws PersistenceException;
+    Iterable<T> findAll();
 
     /**
      * Finds an entity by its unique identifier.
@@ -18,30 +21,21 @@ public interface Repository<T, ID extends Serializable> {
      * @param id the identifier of the entity
      * @return the found entity, or null if no such entity exists
      */
-    T retrieve(ID id) throws IllegalArgumentException, PersistenceException;
+    Optional<T> findById(ID id);
 
     /**
-     * Creates a new entity in the repository.
+     * Saves an entity (new or existing) in the repository.
      *
-     * @param entity the {@code <T>} to create
-     * @return the created entity
+     * @param entity the {@code <T>} to save
+     * @return the saved entity
      */
-    T create(T entity) throws IllegalArgumentException, PersistenceException;
+    <S extends T> S save(S entity);
 
     /**
      * Deletes an entity from the repository based on its unique identifier.
      *
-     * @param entity the entity to update
-     * @return true if the entity was successfully deleted; otherwise false
+     * @param id the id of the entity to delete
      */
-    void delete(T entity) throws IllegalArgumentException, PersistenceException;
-
-    /**
-     * Updates an existing entity in the repository.
-     *
-     * @param entity the entity to update
-     * @return the updated entity
-     */
-    T update(T entity) throws IllegalArgumentException, PersistenceException;
+    void deleteById(ID id);
 
 }
