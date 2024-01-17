@@ -57,7 +57,7 @@ public class ListIOUServiceTest {
 
     @Test
     void testGetIOUNonExisting() {
-        assertNull(service.getIOU(UUID.randomUUID()));
+        assertThrows(IllegalArgumentException.class, () -> service.getIOU(UUID.randomUUID()));
     }
 
     @Test
@@ -103,6 +103,7 @@ public class ListIOUServiceTest {
 
         assertTrue(service.getAllIOUs().contains(iou1));
         Mockito.when(mockRepository.findAll()).thenReturn(List.of(iou2));
+        Mockito.when(mockRepository.findById(iou1.getId())).thenReturn(Optional.of(iou1));
         service.deleteIOU(iou1.getId());
 
         assertFalse(service.getAllIOUs().contains(iou1));
