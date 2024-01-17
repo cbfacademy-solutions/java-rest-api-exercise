@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.springframework.data.annotation.Id;
+
 /**
  * The IOU class represents an IOU (I Owe You) entity with details such as ID, borrower, lender, amount, and date/time.
  */
@@ -55,6 +57,7 @@ public class IOU {
 	 *
 	 * @return The unique identifier for the IOU.
 	 */
+	@Id
 	public UUID getId() {
 		return this.id;
 	}

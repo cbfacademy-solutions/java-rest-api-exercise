@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.cbfacademy.restapiexercise.ProjectApplication;
-import com.cbfacademy.restapiexercise.core.ApiErrorResponse;
 
 import java.math.BigDecimal;
 import java.net.URI;
@@ -40,7 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ProjectApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class IOUControllerTest {
+public class IOUControllerTest {
 
 	@LocalServerPort
 	private int port;
@@ -134,15 +133,13 @@ class IOUControllerTest {
 		IOU iou = createNewIOU();
 		URI endpoint = getEndpoint(iou);
 
-		when(iouService.getIOU(any(UUID.class))).thenThrow(new IOUNotFoundException("IOU not found"));
+		when(iouService.getIOU(any(UUID.class))).thenThrow(IllegalArgumentException.class);
 
 		// Act
-		ResponseEntity<ApiErrorResponse> response = restTemplate.getForEntity(endpoint, ApiErrorResponse.class);
+		ResponseEntity<IOU> response = restTemplate.getForEntity(endpoint, IOU.class);
 
 		// Assert
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-		assertNotNull(response.getBody());
-		assertEquals("IOU not found", response.getBody().getMessage());
 		verify(iouService).getIOU(iou.getId());
 	}
 
@@ -179,16 +176,14 @@ class IOUControllerTest {
 		URI endpoint = getEndpoint(iou);
 
 		when(iouService.updateIOU(any(UUID.class), any(IOU.class)))
-				.thenThrow(new IOUNotFoundException("IOU not found"));
+				.thenThrow(new IllegalArgumentException("IOU not found"));
 
 		// Act
 		RequestEntity<IOU> request = RequestEntity.put(endpoint).accept(MediaType.APPLICATION_JSON).body(iou);
-		ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(request, ApiErrorResponse.class);
+		ResponseEntity<IOU> response = restTemplate.exchange(request, IOU.class);
 
 		// Assert
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-		assertNotNull(response.getBody());
-		assertEquals("IOU not found", response.getBody().getMessage());
 		verify(iouService).updateIOU(any(UUID.class), any(IOU.class));
 	}
 
@@ -198,12 +193,15 @@ class IOUControllerTest {
 		// Arrange
 		IOU iou = selectRandomIOU();
 		URI endpoint = getEndpoint(iou);
+
+		when(iouService.getIOU(any(UUID.class))).thenReturn(iou);
+
 		ResponseEntity<IOU> foundResponse = restTemplate.getForEntity(endpoint, IOU.class);
 
 		doAnswer(invocation -> {
-			return null;
+			throw new IllegalArgumentException();
 		}).when(iouService).deleteIOU(any(UUID.class));
-		when(iouService.getIOU(any(UUID.class))).thenThrow(new IOUNotFoundException("IOU not found"));
+		when(iouService.getIOU(any(UUID.class))).thenThrow(IllegalArgumentException.class);
 
 		// Act
 		restTemplate.delete(endpoint);
@@ -223,16 +221,14 @@ class IOUControllerTest {
 		IOU iou = createNewIOU();
 		URI endpoint = getEndpoint(iou);
 
-		doThrow(new IOUNotFoundException("IOU not found")).when(iouService).deleteIOU(any(UUID.class));
+		doThrow(new IllegalArgumentException("IOU not found")).when(iouService).deleteIOU(any(UUID.class));
 
 		// Act
 		RequestEntity<?> request = RequestEntity.delete(endpoint).accept(MediaType.APPLICATION_JSON).build();
-		ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(request, ApiErrorResponse.class);
+		ResponseEntity<IOU> response = restTemplate.exchange(request, IOU.class);
 
 		// Assert
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-		assertNotNull(response.getBody());
-		assertEquals("IOU not found", response.getBody().getMessage());
 		verify(iouService).deleteIOU(iou.getId());
 	}
 

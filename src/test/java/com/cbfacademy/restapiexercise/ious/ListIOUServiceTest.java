@@ -7,34 +7,35 @@ import org.mockito.Mockito;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultIOUServiceTest {
+public class ListIOUServiceTest {
 
-    private DefaultIOUService service;
+    private ListIOUService service;
     private IOURepository mockRepository;
     private IOU iou1, iou2;
 
     @BeforeEach
     void setUp() {
         mockRepository = Mockito.mock(IOURepository.class);
-        service = new DefaultIOUService(mockRepository);
+        service = new ListIOUService(mockRepository);
         iou1 = new IOU("Borrower1", "Lender1", BigDecimal.valueOf(1000), Instant.now());
         iou2 = new IOU("Borrower2", "Lender2", BigDecimal.valueOf(500), Instant.now());
     }
 
     @Test
     void testGetAllIOUsInitiallyEmpty() {
-        Mockito.when(mockRepository.retrieveAll()).thenReturn(List.of());
+        Mockito.when(mockRepository.findAll()).thenReturn(List.of());
         assertTrue(service.getAllIOUs().isEmpty());
     }
 
     @Test
     void testGetAllIOUsAfterAdding() {
-        Mockito.when(mockRepository.create(Mockito.any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        Mockito.when(mockRepository.retrieveAll()).thenReturn(List.of(iou1, iou2));
+        Mockito.when(mockRepository.save(Mockito.any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        Mockito.when(mockRepository.findAll()).thenReturn(List.of(iou1, iou2));
         service.createIOU(iou1);
         service.createIOU(iou2);
         List<IOU> ious = service.getAllIOUs();
@@ -46,8 +47,8 @@ public class DefaultIOUServiceTest {
 
     @Test
     void testGetIOUExisting() {
-        Mockito.when(mockRepository.create(Mockito.any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        Mockito.when(mockRepository.retrieve(iou1.getId())).thenReturn(iou1);
+        Mockito.when(mockRepository.save(Mockito.any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        Mockito.when(mockRepository.findById(iou1.getId())).thenReturn(Optional.of(iou1));
         service.createIOU(iou1);
         IOU found = service.getIOU(iou1.getId());
 
@@ -61,7 +62,7 @@ public class DefaultIOUServiceTest {
 
     @Test
     void testCreateIOU() {
-        Mockito.when(mockRepository.create(Mockito.any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        Mockito.when(mockRepository.save(Mockito.any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
         IOU created = service.createIOU(iou1);
 
         assertNotNull(created.getId());
@@ -72,8 +73,8 @@ public class DefaultIOUServiceTest {
 
     @Test
     void testUpdateIOUExisting() {
-        Mockito.when(mockRepository.create(Mockito.any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        Mockito.when(mockRepository.update(Mockito.any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        Mockito.when(mockRepository.save(Mockito.any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        Mockito.when(mockRepository.findById(iou1.getId())).thenReturn(Optional.of(iou1));
         service.createIOU(iou1);
         IOU updatedIOU = new IOU("UpdatedBorrower", "UpdatedLender", BigDecimal.valueOf(1500), Instant.now());
         updatedIOU.setBorrower("UpdatedBorrower");
@@ -85,24 +86,25 @@ public class DefaultIOUServiceTest {
 
     @Test
     void testUpdateIOUNonExisting() {
-        Mockito.when(mockRepository.update(Mockito.any(IOU.class))).thenReturn(null);
-        assertNull(service.updateIOU(UUID.randomUUID(),
+        UUID id = UUID.randomUUID();
+
+        Mockito.when(mockRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> service.updateIOU(id,
                 new IOU("Borrower3", "Lender3", BigDecimal.valueOf(200), Instant.now())));
     }
 
     @Test
     void testDeleteIOUExisting() {
-        Mockito.when(mockRepository.delete(Mockito.any(UUID.class))).thenReturn(true);
+        Mockito.when(mockRepository.save(Mockito.any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        Mockito.when(mockRepository.findAll()).thenReturn(List.of(iou1, iou2));
         service.createIOU(iou1);
-        boolean deleted = service.deleteIOU(iou1.getId());
+        service.createIOU(iou2);
 
-        assertTrue(deleted);
+        assertTrue(service.getAllIOUs().contains(iou1));
+        Mockito.when(mockRepository.findAll()).thenReturn(List.of(iou2));
+        service.deleteIOU(iou1.getId());
+
         assertFalse(service.getAllIOUs().contains(iou1));
-    }
-
-    @Test
-    void testDeleteIOUNonExisting() {
-        Mockito.when(mockRepository.delete(Mockito.any(UUID.class))).thenReturn(false);
-        assertFalse(service.deleteIOU(UUID.randomUUID()));
     }
 }
