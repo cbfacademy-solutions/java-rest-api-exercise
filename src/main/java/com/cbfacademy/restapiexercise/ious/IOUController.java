@@ -43,11 +43,11 @@ public class IOUController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<IOU> getIOU(@PathVariable UUID id) {
-        IOU iou = iouService.getIOU(id);
+        try {
+            IOU iou = iouService.getIOU(id);
 
-        if (iou != null) {
             return new ResponseEntity<>(iou, HttpStatus.OK);
-        } else {
+        } catch(IllegalArgumentException exception) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -77,11 +77,11 @@ public class IOUController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<IOU> updateIOU(@PathVariable UUID id, @RequestBody IOU updatedIOU) {
-        IOU iou = iouService.updateIOU(id, updatedIOU);
+        try {
+            IOU iou = iouService.updateIOU(id, updatedIOU);
 
-        if (iou != null) {
             return new ResponseEntity<>(iou, HttpStatus.OK);
-        } else {
+        } catch (IllegalArgumentException exception) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -96,11 +96,11 @@ public class IOUController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteIOU(@PathVariable UUID id) {
-        boolean deleted = iouService.deleteIOU(id);
+        try {
+            iouService.deleteIOU(id);
 
-        if (deleted) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
+        } catch (IllegalArgumentException exception) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
