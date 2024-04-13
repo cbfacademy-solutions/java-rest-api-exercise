@@ -102,11 +102,11 @@ public class IOUController {
      * @param id The ID of the IOU to delete.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteIOU(@PathVariable UUID id) {
+    public ResponseEntity<?> deleteIOU(@PathVariable UUID id) {
         try {
             iouService.deleteIOU(id);
 
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            return ResponseEntity.noContent().build();
         } catch (NoSuchElementException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "IOU Not Found", exception);
         } catch (RuntimeException exception) {
