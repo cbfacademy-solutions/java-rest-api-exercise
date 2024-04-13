@@ -34,7 +34,7 @@ public class IOUController {
 
             return ious;
         } catch (RuntimeException exception) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred", exception);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
         }
     }
 
@@ -54,7 +54,7 @@ public class IOUController {
         } catch (NoSuchElementException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "IOU Not Found", exception);
         } catch (RuntimeException exception) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred", exception);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
         }
     }
 
@@ -71,7 +71,7 @@ public class IOUController {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(createdIOU);
         } catch (RuntimeException exception) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred", exception);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
         }
     }
 
@@ -92,7 +92,7 @@ public class IOUController {
         } catch (NoSuchElementException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "IOU Not Found", exception);
         } catch (RuntimeException exception) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred", exception);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
         }
     }
 
@@ -110,7 +110,7 @@ public class IOUController {
         } catch (NoSuchElementException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "IOU Not Found", exception);
         } catch (RuntimeException exception) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred", exception);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
         }
     }
 }
