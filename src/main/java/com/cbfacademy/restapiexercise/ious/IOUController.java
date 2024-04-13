@@ -1,6 +1,7 @@
 package com.cbfacademy.restapiexercise.ious;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -64,11 +65,11 @@ public class IOUController {
      * @return The created IOU and HttpStatus CREATED if successful.
      */
     @PostMapping
-    public IOU createIOU(@RequestBody IOU iou) {
+    public ResponseEntity<IOU> createIOU(@RequestBody IOU iou) {
         try {
             IOU createdIOU = iouService.createIOU(iou);
 
-            return createdIOU;
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdIOU);
         } catch (RuntimeException exception) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred", exception);
         }
@@ -101,9 +102,11 @@ public class IOUController {
      * @param id The ID of the IOU to delete.
      */
     @DeleteMapping("/{id}")
-    public void deleteIOU(@PathVariable UUID id) {
+    public ResponseEntity<Object> deleteIOU(@PathVariable UUID id) {
         try {
             iouService.deleteIOU(id);
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (NoSuchElementException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "IOU Not Found", exception);
         } catch (RuntimeException exception) {
