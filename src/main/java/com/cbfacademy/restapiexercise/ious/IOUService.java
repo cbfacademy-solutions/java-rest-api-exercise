@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 
 /**
- * Service class to manage IOU objects using in-memory List-based storage.
+ * Service class to manage IOU objects.
  */
 @Service
 public class IOUService {
