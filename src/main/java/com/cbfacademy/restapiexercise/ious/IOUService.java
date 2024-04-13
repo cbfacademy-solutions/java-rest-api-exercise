@@ -40,9 +40,11 @@ public class IOUService {
         return repository.save(iou);
     }
 
-    public void deleteIOU(UUID id) {
+    public void deleteIOU(UUID id) throws NoSuchElementException {
         if (repository.findById(id).isPresent()) {
             repository.deleteById(id);
+        } else {
+            throw new NoSuchElementException();
         }
     }
 }
