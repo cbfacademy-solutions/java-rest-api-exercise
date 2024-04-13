@@ -43,8 +43,11 @@ public class IOU {
 	 */
 	private Instant dateTime;
 
+	/**
+	 * Default no-params constructor
+	 */
 	public IOU() {
-		this(null, null, BigDecimal.ZERO, Instant.MIN);
+		this(null, null, BigDecimal.ZERO, Instant.now());
 	}
 
 	/**
