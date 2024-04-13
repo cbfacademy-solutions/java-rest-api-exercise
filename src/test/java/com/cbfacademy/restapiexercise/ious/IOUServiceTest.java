@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,7 +58,7 @@ public class IOUServiceTest {
 
     @Test
     void testGetIOUNonExisting() {
-        assertThrows(IllegalArgumentException.class, () -> service.getIOU(UUID.randomUUID()));
+        assertThrows(NoSuchElementException.class, () -> service.getIOU(UUID.randomUUID()));
     }
 
     @Test
@@ -90,7 +91,7 @@ public class IOUServiceTest {
 
         Mockito.when(mockRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> service.updateIOU(id,
+        assertThrows(NoSuchElementException.class, () -> service.updateIOU(id,
                 new IOU("Borrower3", "Lender3", BigDecimal.valueOf(200), Instant.now())));
     }
 
