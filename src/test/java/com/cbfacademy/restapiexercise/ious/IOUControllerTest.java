@@ -27,6 +27,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.UUID;
 
@@ -133,7 +134,7 @@ public class IOUControllerTest {
 		IOU iou = createNewIOU();
 		URI endpoint = getEndpoint(iou);
 
-		when(iouService.getIOU(any(UUID.class))).thenThrow(IllegalArgumentException.class);
+		when(iouService.getIOU(any(UUID.class))).thenThrow(NoSuchElementException.class);
 
 		// Act
 		ResponseEntity<IOU> response = restTemplate.getForEntity(endpoint, IOU.class);
@@ -176,7 +177,7 @@ public class IOUControllerTest {
 		URI endpoint = getEndpoint(iou);
 
 		when(iouService.updateIOU(any(UUID.class), any(IOU.class)))
-				.thenThrow(new IllegalArgumentException("IOU not found"));
+				.thenThrow(new NoSuchElementException("IOU not found"));
 
 		// Act
 		RequestEntity<IOU> request = RequestEntity.put(endpoint).accept(MediaType.APPLICATION_JSON).body(iou);
@@ -199,17 +200,18 @@ public class IOUControllerTest {
 		ResponseEntity<IOU> foundResponse = restTemplate.getForEntity(endpoint, IOU.class);
 
 		doAnswer(invocation -> {
-			throw new IllegalArgumentException();
+			return null;
 		}).when(iouService).deleteIOU(any(UUID.class));
-		when(iouService.getIOU(any(UUID.class))).thenThrow(IllegalArgumentException.class);
+		when(iouService.getIOU(any(UUID.class))).thenThrow(NoSuchElementException.class);
 
 		// Act
-		restTemplate.delete(endpoint);
-
+		RequestEntity<Void> request = RequestEntity.delete(endpoint).accept(MediaType.APPLICATION_JSON).build();
+		ResponseEntity<Object> deletionResponse = restTemplate.exchange(request, Object.class);
 		ResponseEntity<IOU> deletedResponse = restTemplate.getForEntity(endpoint, IOU.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, foundResponse.getStatusCode());
+		assertEquals(HttpStatus.NO_CONTENT, deletionResponse.getStatusCode());
 		assertEquals(HttpStatus.NOT_FOUND, deletedResponse.getStatusCode());
 		verify(iouService).deleteIOU(iou.getId());
 	}
@@ -221,7 +223,7 @@ public class IOUControllerTest {
 		IOU iou = createNewIOU();
 		URI endpoint = getEndpoint(iou);
 
-		doThrow(new IllegalArgumentException("IOU not found")).when(iouService).deleteIOU(any(UUID.class));
+		doThrow(new NoSuchElementException("IOU not found")).when(iouService).deleteIOU(any(UUID.class));
 
 		// Act
 		RequestEntity<?> request = RequestEntity.delete(endpoint).accept(MediaType.APPLICATION_JSON).build();
