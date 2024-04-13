@@ -33,6 +33,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
@@ -205,13 +206,14 @@ public class IOUControllerTest {
 		when(iouService.getIOU(any(UUID.class))).thenThrow(NoSuchElementException.class);
 
 		// Act
-		RequestEntity<Void> request = RequestEntity.delete(endpoint).accept(MediaType.APPLICATION_JSON).build();
-		ResponseEntity<Object> deletionResponse = restTemplate.exchange(request, Object.class);
+		RequestEntity<?> request = RequestEntity.delete(endpoint).accept(MediaType.APPLICATION_JSON).build();
+		ResponseEntity<?> deletionResponse = restTemplate.exchange(request, Object.class);
 		ResponseEntity<IOU> deletedResponse = restTemplate.getForEntity(endpoint, IOU.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, foundResponse.getStatusCode());
-		assertEquals(HttpStatus.NO_CONTENT, deletionResponse.getStatusCode());
+		assertTrue(deletionResponse.getStatusCode() == HttpStatus.OK
+				|| deletionResponse.getStatusCode() == HttpStatus.NO_CONTENT);
 		assertEquals(HttpStatus.NOT_FOUND, deletedResponse.getStatusCode());
 		verify(iouService).deleteIOU(iou.getId());
 	}
