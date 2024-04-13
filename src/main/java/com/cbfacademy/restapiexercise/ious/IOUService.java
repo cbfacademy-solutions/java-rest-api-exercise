@@ -1,47 +1,48 @@
 package com.cbfacademy.restapiexercise.ious;
 
+import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
-public interface IOUService {
+/**
+ * Service class to manage IOU objects using in-memory List-based storage.
+ */
+@Service
+public class IOUService {
 
-    /**
-     * Retrieve a list of all IOUs.
-     *
-     * @return A list of all IOUs.
-     */
-    List<IOU> getAllIOUs();
+    private final IOURepository repository;
 
-    /**
-     * Retrieve an IOU by its ID.
-     *
-     * @param id The ID of the IOU to retrieve.
-     * @return The IOU with the specified ID, or null if not found.
-     */
-    IOU getIOU(UUID id);
+    public IOUService(IOURepository repository) {
+        this.repository = repository;
+    }
 
-    /**
-     * Create a new IOU.
-     *
-     * @param iou The IOU object to create.
-     * @return The created IOU.
-     */
-    IOU createIOU(IOU iou);
+    public List<IOU> getAllIOUs() {
+        return repository.findAll();
+    }
 
-    /**
-     * Update an existing IOU by its ID.
-     *
-     * @param id         The ID of the IOU to update.
-     * @param updatedIOU The updated IOU object.
-     * @return The updated IOU, or null if the ID is not found.
-     */
-    IOU updateIOU(UUID id, IOU updatedIOU);
+    public IOU getIOU(UUID id) throws NoSuchElementException {
+        return repository.findById(id).orElseThrow();
+    }
 
-    /**
-     * Delete an IOU by its ID.
-     *
-     * @param id The ID of the IOU to delete.
-     */
-    void deleteIOU(UUID id);
+    public IOU createIOU(IOU iou) {
+        return repository.save(iou);
+    }
 
+    public IOU updateIOU(UUID id, IOU updatedIOU) throws NoSuchElementException {
+        IOU iou = repository.findById(id).orElseThrow();
+
+        iou.setBorrower(updatedIOU.getBorrower());
+        iou.setLender(updatedIOU.getLender());
+        iou.setAmount(updatedIOU.getAmount());
+
+        return repository.save(iou);
+    }
+
+    public void deleteIOU(UUID id) {
+        if (repository.findById(id).isPresent()) {
+            repository.deleteById(id);
+        }
+    }
 }

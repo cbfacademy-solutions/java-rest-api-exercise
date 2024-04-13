@@ -16,7 +16,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.cbfacademy.restapiexercise.ProjectApplication;
+import com.cbfacademy.restapiexercise.RestApiExerciseApplication;
 
 import java.math.BigDecimal;
 import java.net.URI;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = ProjectApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = RestApiExerciseApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IOUControllerTest {
 
 	@LocalServerPort

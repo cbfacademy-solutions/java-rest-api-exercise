@@ -4,16 +4,23 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Table;
 
 /**
  * The IOU class represents an IOU (I Owe You) entity with details such as ID, borrower, lender, amount, and date/time.
  */
+@Entity
+@Table(name = "ious")
 public class IOU {
 
 	/**
 	 * The unique identifier for the IOU.
 	 */
+	@Id
+	@GeneratedValue
 	private final UUID id;
 
 	/**
@@ -36,6 +43,10 @@ public class IOU {
 	 */
 	private Instant dateTime;
 
+	public IOU() {
+		this(null, null, BigDecimal.ZERO, Instant.MIN);
+	}
+
 	/**
 	 * Parameterised constructor to create an IOU with specified details.
 	 *
@@ -57,7 +68,6 @@ public class IOU {
 	 *
 	 * @return The unique identifier for the IOU.
 	 */
-	@Id
 	public UUID getId() {
 		return this.id;
 	}
