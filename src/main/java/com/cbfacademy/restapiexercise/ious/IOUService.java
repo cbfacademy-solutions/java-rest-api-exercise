@@ -1,5 +1,6 @@
 package com.cbfacademy.restapiexercise.ious;
 
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class IOUService {
         return repository.findById(id).orElseThrow();
     }
 
-    public IOU createIOU(IOU iou) {
+    public IOU createIOU(IOU iou) throws IllegalArgumentException, OptimisticLockingFailureException {
         return repository.save(iou);
     }
 
