@@ -7,6 +7,7 @@ import java.util.UUID;
 import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 
 /**
@@ -20,8 +21,8 @@ public class IOU {
 	 * The unique identifier for the IOU.
 	 */
 	@Id
-	@GeneratedValue
-	private final UUID id;
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private UUID id;
 
 	/**
 	 * The name of the borrower in the IOU transaction.
@@ -59,7 +60,6 @@ public class IOU {
 	 * @param dateTime The date and time when the IOU was created.
 	 */
 	public IOU(String borrower, String lender, BigDecimal amount, Instant dateTime) {
-		this.id = UUID.randomUUID();
 		this.borrower = borrower;
 		this.lender = lender;
 		this.amount = amount;

@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.cbfacademy.restapiexercise.RestApiExerciseApplication;
@@ -81,7 +82,7 @@ public class IOUControllerTest {
 		// Arrange
 		IOU iou = createNewIOU();
 
-		when(iouService.createIOU(any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
+		when(iouService.createIOU(any(IOU.class))).thenAnswer(invocation -> setId(invocation.getArgument(0)));
 
 		// Act
 		ResponseEntity<IOU> response = restTemplate.postForEntity(baseURI.toString(), iou, IOU.class);
@@ -239,11 +240,11 @@ public class IOUControllerTest {
 	private IOU selectRandomIOU() {
 		int randomIndex = new Random().nextInt(defaultIOUs.size());
 
-		return defaultIOUs.get(randomIndex);
+		return setId(defaultIOUs.get(randomIndex));
 	}
 
 	private IOU createNewIOU() {
-		return new IOU("John", "Alice", new BigDecimal("100.00"), getInstant(0));
+		return setId(new IOU("John", "Alice", new BigDecimal("100.00"), getInstant(0)));
 	}
 
 	private URI getEndpoint(IOU iou) {
@@ -267,5 +268,10 @@ public class IOUControllerTest {
 
 	private URI appendPath(URI uri, String path) {
 		return UriComponentsBuilder.fromUri(uri).pathSegment(path).build().encode().toUri();
+	}
+
+	private static IOU setId(IOU iou) {
+		ReflectionTestUtils.setField(iou, "id", UUID.randomUUID());
+		return iou;
 	}
 }

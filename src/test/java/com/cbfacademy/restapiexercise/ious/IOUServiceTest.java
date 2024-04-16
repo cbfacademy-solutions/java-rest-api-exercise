@@ -3,6 +3,7 @@ package com.cbfacademy.restapiexercise.ious;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -63,7 +64,12 @@ public class IOUServiceTest {
 
     @Test
     void testCreateIOU() {
-        Mockito.when(mockRepository.save(Mockito.any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        Mockito.when(mockRepository.save(Mockito.any(IOU.class))).thenAnswer(invocation -> {
+            IOU iou = invocation.getArgument(0);
+            ReflectionTestUtils.setField((IOU) iou, "id", UUID.randomUUID());
+            
+            return iou;
+        });
         IOU created = service.createIOU(iou1);
 
         assertNotNull(created.getId());
