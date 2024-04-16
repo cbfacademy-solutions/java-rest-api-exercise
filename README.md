@@ -4,84 +4,48 @@
 
 Build a RESTful API service that allows users to `create`, `read`, `update`, and `delete` IOUs (I Owe You) using Java and Spring Boot.
 
-### Implement the Data Model
-
-Inside the `ious` package, create an `IOU` entity class with the following members:
-- `final UUID id` - unique identifier for the IOU
-- `String borrower` - name of borrower
-- `String lender` - name of lender
-- `BigDecimal amount` - amount covered by IOU
-- `Instant dateTime` - date and time of IOU being issued
-- `public IOU(String borrower, String lender, BigDecimal amount, Instant datetime)` - constructor that should generate a new UUID, use [the documentation][1] to learn how to generate a random value.
-
-Set the appropriate accessibility modifiers for all members and add appropriate property getters and setters.
-
-A representative HTTP response will look something like this:
-```JSON
-{
-    "id": "5a6b7692-2322-482e-80cf-a59eedb9164f",
-    "borrower": "Bob",
-    "lender": "Alice",
-    "amount": 1877.51,
-    "date": "2023-04-23T18:25:43.511Z"
-}
-```
-
-### Implement the Repository
-
-A repository interface, `IOURepository` has been provided for you. Create a class that implements this interface using a `List` instance as the backing store and name it something sensible, e.g. `ListIOURepository`, with the following members:
-
-- `final List<IOU> ious = new ArrayList<>()` - list of IOUs stored in the API
-
-Set the appropriate accessibility modifiers for all members and annotate the class as a [Repository][2]. Pay attention to the exceptions defined on the interfaces and ensure your concrete class throws as appropriate.
-
-### Implement the Service
-
-A service interface, `IOUService` has been provided for you. Create a class that implements this interface using a `List` instance as the backing store and name it something sensible, e.g. `ListIOUService`, with the following members:
-
-- `final List<IOU> ious = new ArrayList<>()` - 
-- `public ListIOUService (IOURepository iouRepository)`
-
-Set the appropriate accessibility modifiers for all members and annotate the class as a [Service][3]. Ensure your code appropriately handles any exceptions thrown by the repository class.
-
-### Implement the Controller
-
-Create an `IOUController` class with the following members:
-
-- `IOUService iouService` - in instance of the service interface
-- `IOUController(IOUService iouService)` - constructor that accepts an instance of the service interface
-
-Add additional methods that defines endpoints for the following operations:
-
-| Method   | URL              | Description          |
-| -------- | ---------------- | -------------------- |
-| `GET`    | `/api/ious`      | Get all IOUs         |
-| `GET`    | `/api/ious/{id}` | Get an IOU by id     |
-| `POST`   | `/api/ious`      | Add an IOU           |
-| `PUT`    | `/api/ious/{id}` | Replace an IOU by Id |
-| `DELETE` | `/api/ious/{id}` | Delete an IOU by id  |
-
-Set the appropriate accessibility modifiers for all members and annotate the class as a [RestController][4].
-
-## Learning Objectives:
-
-By the end of this exercise, you should be able to:
-
-- Set up a Spring Boot project using a development environment
-- Create a simple RESTful API for IOU tracking using controllers, services and models.
-- Implement CRUD operations (Create, Read, Update, Delete) for IOUs
-- Implement graceful exception handling
-
 ## Getting Started
 
-### Clone the Repository
-Clone this repository or or open in CodeSpaces.
+### Clone Repository
+- Fork this repository in your GitHub account
+- Clone your fork locally or open in CodeSpaces.
 
 ```sh
 git clone [REPO_URL]
 cd [REPO_NAME]
 ```
-Replace [REPO_URL] with the link to your GitHub repository and [REPO_NAME] with the repository's name.
+
+> :bulb: **Note:** Replace [REPO_URL] with the link to your GitHub repository and [REPO_NAME] with the repository's name.
+
+### Create Database
+- Login to MySQL
+
+```sh
+mysql -u root -p
+```
+> :bulb: **Note:** If your root user doesn't have a password set, omit the `-p` flag.
+
+- Create a new database and exit MySQL
+
+```sh
+CREATE DATABASE IF NOT EXISTS restapiexercise;
+exit;
+```
+
+### Initialise Project
+- Open this [pre-configured Initializr project](https://start.spring.io/#!type=maven-project&language=java&platformVersion=3.2.4&packaging=jar&jvmVersion=17&groupId=com.cbfacademy&artifactId=restapiexercise&name=REST%20API%20Exercise&description=RESTful%20API%20exercise%20using%20Spring%20Boot&packageName=com.cbfacademy.restapiexercise&dependencies=web,data-jpa,mysql,devtools) and click "Generate" to download a zipped project.
+- Extract the downloaded zip file and copy the *contents* of the folder (**not** the folder itself!) to your local repository
+- Open your repository in VS Code
+- Add the following connection details to application.properties
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/restapiexercise
+spring.datasource.username=[db user]
+spring.datasource.password=[db user password, blank if not set]
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.hibernate.ddl-auto=create
+spring.jpa.open-in-view=true
+```
 
 ### Install Dependencies
 
@@ -96,7 +60,7 @@ If you are on a Windows machine, that will be:
 mvnw clean dependency:resolve
 ```
 
-### Running the Application
+### Run Application
 
 To start the API from the terminal, run the following command:
 
@@ -110,11 +74,34 @@ Or on Windows:
 mvnw spring-boot:run
 ```
 
-### Testing the Application
+If successful, you should see output that ends similarly to the below
 
-You can test your endpoints using [Postman][5] or your preferred REST client.
+```
+2024-04-12T11:49:59.055-04:00  INFO 39975 --- [REST API Exercise] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+2024-04-12T11:49:59.059-04:00  INFO 39975 --- [REST API Exercise] [           main] c.c.r.RestApiExerciseApplication         : Started RestApiExerciseApplication in 1.493 seconds (process running for 1.638)
+```
 
-For `POST` and `PUT` requests, you'll need to provide a request body in JSON format, e.g.:
+### Stop Application
+Stop the application by pressing `Ctrl + C`
+
+### Save Repository Snapshot
+Commit your work and push to GitHub
+
+```sh
+git add .
+git commit -m "[Your commit message]"
+git push origin main
+```
+
+## Completing the Exercise
+
+Follow the instructions provided in the session slides.
+
+## Testing the API
+
+You can test your endpoints using [Postman](https://www.postman.com) or your preferred REST client.
+
+The JSON representation of an IOU that you'll get in responses or provide in the request body for `POST` and `PUT` requests will resemble the following:
 
 ```json
 {
@@ -126,12 +113,16 @@ For `POST` and `PUT` requests, you'll need to provide a request body in JSON for
 }
 ```
 
-#### :bulb: Note
+> :bulb: **Note:** Remember that the `id` property may not be needed for all request types.
 
-Remember that the `id` property may not be needed for all request types.
+## Top Tips
 
-[1]: https://docs.oracle.com/javase/8/docs/api/java/util/UUID.html
-[2]: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/stereotype/Repository.html
-[3]: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/stereotype/Service.html
-[4]: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/bind/annotation/RestController.html
-[5]: https://www.postman.com
+- :camera_flash: Commit frequently and use meaningful commit messages. A granular, well-labelled history becomes an increasingly valuable asset over time.
+- :cactus: Use feature branches. Build the habit of isolating your changes for specific tasks and merging them into your default branch when complete.
+- :vertical_traffic_light: Use consistent naming conventions. Choose easily understandable names and naming patterns for your classes, functions and variables.
+- :triangular_ruler: Keep your code tidy. Using the built-in formatting of VS Code or other IDEs makes your code easier to read and mistakes easier to spot.
+- :books: Read the docs. Whether via Intellisense in your IDE, or browsing online documentation, build a clear understanding of the libraries your code leverages.
+- :calendar: Don't wait until the last minute. Plan your work early and make the most of the time available to complete the assessment and avoid pre-deadline palpitations.
+- :sos: Ask. :clap: For. :clap: Help! :clap: Your mentors, instructors and assistants are literally here to support you, so *make use of them* - don't sit and struggle in silence.
+
+Best of luck! Remember, it's not just about the destination; it's the journey. Happy coding! 🚀
