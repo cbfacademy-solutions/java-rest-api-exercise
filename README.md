@@ -38,15 +38,20 @@ exit;
   - Windows: `xcopy [extracted directory] [local repo directory] /S /H /C /Y`, e.g. `xcopy C:\Users\myaccount\Downloads\restapiexercise C:\Dev\cbfacademy\java-rest-api-exercise /S /H /C /Y`
   - macOS: `cp -R [extracted directory]/. [local repo directory]` e.g. `cp -R ~/Downloads/restapiexercise/. ~/Dev/cbfacademy/java-rest-api-exercise` (note that the `/.` after the extracted directory path is required for the command to work as intended)
 - Open your repository in VS Code
-- Add the following connection details to application.properties
+- Add the following values to src/main/resources/application.properties:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/restapiexercise
-spring.datasource.username=[db user]
-spring.datasource.password=[db user password, blank if not set]
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 spring.jpa.hibernate.ddl-auto=create
 spring.jpa.open-in-view=true
+spring.config.import=optional:./local.properties
+```
+- In order to prevent sensitive values from being committed to version control, create a new file at src/main/resources/local.properties and add the following values: 
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/restapiexercise
+spring.datasource.username=root # Replace "root" with your db user, if applicable
+spring.datasource.password= # Specify your db user's password, if applicable
 ```
 
 ### Install Dependencies
