@@ -14,7 +14,7 @@
 	<name>REST API Exercise</name>
 	<description>RESTful API exercise using Spring Boot</description>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>21</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
