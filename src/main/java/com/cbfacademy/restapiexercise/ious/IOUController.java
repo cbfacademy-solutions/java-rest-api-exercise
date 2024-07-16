@@ -113,4 +113,34 @@ public class IOUController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
         }
     }
+
+    /**
+     * Get all IOUs by borrower.
+     *
+     * @param borrower The borrower's name.
+     * @return A list of IOUs.
+     */
+    @GetMapping("/?borrower={borrower}")
+    public List<IOU> getIOUsByBorrower(@RequestParam String borrower) {
+        try {
+            return iouService.getIOUsByBorrower(borrower);
+        } catch (RuntimeException exception) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
+        }
+    }
+
+    /**
+     * Get all IOUs by lender.
+     *
+     * @param lender The lender's name.
+     * @return A list of IOUs.
+     */
+    @GetMapping("/?lender={lender}")
+    public List<IOU> getIOUsByLender(@RequestParam String lender) {
+        try {
+            return iouService.getIOUsByLender(lender);
+        } catch (RuntimeException exception) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
+        }
+    }
 }

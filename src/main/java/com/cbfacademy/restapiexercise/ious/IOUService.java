@@ -48,4 +48,12 @@ public class IOUService {
             throw new NoSuchElementException();
         }
     }
+
+    public List<IOU> getIOUsByBorrower(String borrower) {
+        return repository.findByBorrowerIgnoreCase(borrower);
+    }
+
+    public List<IOU> getIOUsByLender(String lender) {
+        return repository.findByLenderIgnoreCase(lender);
+    }
 }
