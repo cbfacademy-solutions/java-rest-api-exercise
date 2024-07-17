@@ -93,7 +93,20 @@ Stop the application by pressing `Ctrl + C`
 
 ## Completing the Exercise
 
-Follow the instructions provided in the session slides.
+1. Create an ious package in the main restapiexercise package
+2. Create an `IOU` entity class that maps to the "ious" table and has the following fields:
+    - `UUID id`
+    - `String borrower`
+    - `String lender`
+    - `BigDecimal amount`
+    - `Instant dateTime`
+3. Ensure the `id` field is set as the primary key and values are generated using the appropriate strategy
+4. Create getters and setters for each field, except `id`, which should only have a getter
+5. Create an `IOURepository` interface that extends `ListCrudRepository<IOU, UUID>`
+6. Ensure local.properties is correctly configured with your database details
+7. Start your API with `./mvnw clean spring-boot:run` (if it's already running, restart it) and confirm there are no errors
+8. Check your database contains an "ious" table with the correct columns and data types
+
 
 ## Testing the API
 
