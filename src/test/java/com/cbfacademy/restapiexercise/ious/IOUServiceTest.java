@@ -3,25 +3,27 @@ package com.cbfacademy.restapiexercise.ious;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ListIOUServiceTest {
+public class IOUServiceTest {
 
-    private ListIOUService service;
+    private IOUService service;
     private IOURepository mockRepository;
     private IOU iou1, iou2;
 
     @BeforeEach
     void setUp() {
         mockRepository = Mockito.mock(IOURepository.class);
-        service = new ListIOUService(mockRepository);
+        service = new IOUService(mockRepository);
         iou1 = new IOU("Borrower1", "Lender1", BigDecimal.valueOf(1000), Instant.now());
         iou2 = new IOU("Borrower2", "Lender2", BigDecimal.valueOf(500), Instant.now());
     }
@@ -57,12 +59,17 @@ public class ListIOUServiceTest {
 
     @Test
     void testGetIOUNonExisting() {
-        assertThrows(IllegalArgumentException.class, () -> service.getIOU(UUID.randomUUID()));
+        assertThrows(NoSuchElementException.class, () -> service.getIOU(UUID.randomUUID()));
     }
 
     @Test
     void testCreateIOU() {
-        Mockito.when(mockRepository.save(Mockito.any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        Mockito.when(mockRepository.save(Mockito.any(IOU.class))).thenAnswer(invocation -> {
+            IOU iou = invocation.getArgument(0);
+            ReflectionTestUtils.setField((IOU) iou, "id", UUID.randomUUID());
+            
+            return iou;
+        });
         IOU created = service.createIOU(iou1);
 
         assertNotNull(created.getId());
@@ -90,7 +97,7 @@ public class ListIOUServiceTest {
 
         Mockito.when(mockRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> service.updateIOU(id,
+        assertThrows(NoSuchElementException.class, () -> service.updateIOU(id,
                 new IOU("Borrower3", "Lender3", BigDecimal.valueOf(200), Instant.now())));
     }
 

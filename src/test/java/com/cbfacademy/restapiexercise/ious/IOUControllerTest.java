@@ -14,9 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.cbfacademy.restapiexercise.ProjectApplication;
+import com.cbfacademy.restapiexercise.RestApiExerciseApplication;
 
 import java.math.BigDecimal;
 import java.net.URI;
@@ -27,18 +28,20 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = ProjectApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = RestApiExerciseApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IOUControllerTest {
 
 	@LocalServerPort
@@ -79,7 +82,7 @@ public class IOUControllerTest {
 		// Arrange
 		IOU iou = createNewIOU();
 
-		when(iouService.createIOU(any(IOU.class))).thenAnswer(invocation -> invocation.getArgument(0));
+		when(iouService.createIOU(any(IOU.class))).thenAnswer(invocation -> setId(invocation.getArgument(0)));
 
 		// Act
 		ResponseEntity<IOU> response = restTemplate.postForEntity(baseURI.toString(), iou, IOU.class);
@@ -133,7 +136,7 @@ public class IOUControllerTest {
 		IOU iou = createNewIOU();
 		URI endpoint = getEndpoint(iou);
 
-		when(iouService.getIOU(any(UUID.class))).thenThrow(IllegalArgumentException.class);
+		when(iouService.getIOU(any(UUID.class))).thenThrow(NoSuchElementException.class);
 
 		// Act
 		ResponseEntity<IOU> response = restTemplate.getForEntity(endpoint, IOU.class);
@@ -176,7 +179,7 @@ public class IOUControllerTest {
 		URI endpoint = getEndpoint(iou);
 
 		when(iouService.updateIOU(any(UUID.class), any(IOU.class)))
-				.thenThrow(new IllegalArgumentException("IOU not found"));
+				.thenThrow(new NoSuchElementException("IOU not found"));
 
 		// Act
 		RequestEntity<IOU> request = RequestEntity.put(endpoint).accept(MediaType.APPLICATION_JSON).body(iou);
@@ -199,17 +202,19 @@ public class IOUControllerTest {
 		ResponseEntity<IOU> foundResponse = restTemplate.getForEntity(endpoint, IOU.class);
 
 		doAnswer(invocation -> {
-			throw new IllegalArgumentException();
+			return null;
 		}).when(iouService).deleteIOU(any(UUID.class));
-		when(iouService.getIOU(any(UUID.class))).thenThrow(IllegalArgumentException.class);
+		when(iouService.getIOU(any(UUID.class))).thenThrow(NoSuchElementException.class);
 
 		// Act
-		restTemplate.delete(endpoint);
-
+		RequestEntity<?> request = RequestEntity.delete(endpoint).accept(MediaType.APPLICATION_JSON).build();
+		ResponseEntity<?> deletionResponse = restTemplate.exchange(request, Object.class);
 		ResponseEntity<IOU> deletedResponse = restTemplate.getForEntity(endpoint, IOU.class);
 
 		// Assert
 		assertEquals(HttpStatus.OK, foundResponse.getStatusCode());
+		assertTrue(deletionResponse.getStatusCode() == HttpStatus.OK
+				|| deletionResponse.getStatusCode() == HttpStatus.NO_CONTENT);
 		assertEquals(HttpStatus.NOT_FOUND, deletedResponse.getStatusCode());
 		verify(iouService).deleteIOU(iou.getId());
 	}
@@ -221,7 +226,7 @@ public class IOUControllerTest {
 		IOU iou = createNewIOU();
 		URI endpoint = getEndpoint(iou);
 
-		doThrow(new IllegalArgumentException("IOU not found")).when(iouService).deleteIOU(any(UUID.class));
+		doThrow(new NoSuchElementException("IOU not found")).when(iouService).deleteIOU(any(UUID.class));
 
 		// Act
 		RequestEntity<?> request = RequestEntity.delete(endpoint).accept(MediaType.APPLICATION_JSON).build();
@@ -235,11 +240,11 @@ public class IOUControllerTest {
 	private IOU selectRandomIOU() {
 		int randomIndex = new Random().nextInt(defaultIOUs.size());
 
-		return defaultIOUs.get(randomIndex);
+		return setId(defaultIOUs.get(randomIndex));
 	}
 
 	private IOU createNewIOU() {
-		return new IOU("John", "Alice", new BigDecimal("100.00"), getInstant(0));
+		return setId(new IOU("John", "Alice", new BigDecimal("100.00"), getInstant(0)));
 	}
 
 	private URI getEndpoint(IOU iou) {
@@ -263,5 +268,10 @@ public class IOUControllerTest {
 
 	private URI appendPath(URI uri, String path) {
 		return UriComponentsBuilder.fromUri(uri).pathSegment(path).build().encode().toUri();
+	}
+
+	private static IOU setId(IOU iou) {
+		ReflectionTestUtils.setField(iou, "id", UUID.randomUUID());
+		return iou;
 	}
 }
