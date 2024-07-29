@@ -36,13 +36,13 @@ exit;
 - Open this [pre-configured Initializr project](https://start.spring.io/#!type=maven-project&language=java&packaging=jar&jvmVersion=21&groupId=com.cbfacademy&artifactId=restapiexercise&name=REST%20API%20Exercise&description=RESTful%20API%20exercise%20using%20Spring%20Boot&packageName=com.cbfacademy.restapiexercise&dependencies=web,data-jpa,mysql,devtools) and click "Generate" to download a zipped project.
 - Extract the downloaded zip file and copy the *contents* of the folder (**not** the folder itself!) to your local repository. Don't drag-and-drop in Explorer/Finder as there are hidden files which may not be correctly copied across.
   - Windows: `xcopy [extracted directory] [local repo directory] /S /H /C /Y`, e.g. `xcopy C:\Users\myaccount\Downloads\restapiexercise C:\Dev\cbfacademy\java-rest-api-exercise /S /H /C /Y`
-  - macOS: `cp -R [extracted directory]/. [local repo directory]` e.g. `cp -R ~/Downloads/restapiexercise/. ~/Dev/cbfacademy/java-rest-api-exercise` (note that the `/.` after the extracted directory path is required for the command to work as intended)
+  - macOS: `cp -R [extracted directory]/. [local repo directory]` e.g. `cp -R ~/Downloads/restapiexercise/. ~/Dev/cbfacademy/java-rest-api-exercise` (**IMPORTANT:** the `/.` after the extracted directory path is required for the command to work as intended)
 - Open your repository in VS Code
 - Add the following values to src/main/resources/application.properties:
 
 ```properties
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.jpa.hibernate.ddl-auto=create
+spring.jpa.hibernate.ddl-auto=update
 spring.jpa.open-in-view=true
 spring.config.import=optional:./local.properties
 ```
