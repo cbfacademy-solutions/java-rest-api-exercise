@@ -40,9 +40,9 @@ public class IOU {
 	private BigDecimal amount;
 
 	/**
-	 * The date and time when the IOU was created.
+	 * The timestamp when the IOU was created.
 	 */
-	private Instant dateTime;
+	private Instant createdAt;
 
 	/**
 	 * Default no-params constructor
@@ -57,13 +57,13 @@ public class IOU {
 	 * @param borrower The name of the borrower.
 	 * @param lender   The name of the lender.
 	 * @param amount   The amount of money in the IOU.
-	 * @param dateTime The date and time when the IOU was created.
+	 * @param createdAt The timestamp when the IOU was created.
 	 */
-	public IOU(String borrower, String lender, BigDecimal amount, Instant dateTime) {
+	public IOU(String borrower, String lender, BigDecimal amount, Instant createdAt) {
 		this.borrower = borrower;
 		this.lender = lender;
 		this.amount = amount;
-		this.dateTime = dateTime;
+		this.createdAt = createdAt;
 	}
 
 	/**
@@ -130,11 +130,11 @@ public class IOU {
 	}
 
 	/**
-	 * Get the date and time when the IOU was created.
+	 * Get the timestamp of when the IOU was created.
 	 *
-	 * @return The date and time of the IOU creation.
+	 * @return The timestamp when the IOU was created.
 	 */
-	public Instant getDateTime() {
-		return this.dateTime;
+	public Instant getCreatedAt() {
+		return this.createdAt;
 	}
 }
