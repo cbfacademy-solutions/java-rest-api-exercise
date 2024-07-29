@@ -3,6 +3,7 @@ package com.cbfacademy.restapiexercise.ious;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 
 /**
@@ -27,4 +28,21 @@ public interface IOURepository extends ListCrudRepository<IOU, UUID> {
      */
     List<IOU> findByLenderIgnoreCase(String lender);
 
+    /**
+     * Searches for IOUs where the amount is more than the average amount of all IOUs.
+     *
+     * @return a list of IOUs that have a high value
+     */
+    // @Query("SELECT i FROM IOU i WHERE i.amount > (SELECT AVG(i.amount) FROM IOU i) ORDER BY i.createdAt DESC")
+    @Query(value = "SELECT * FROM ious WHERE amount > (SELECT AVG(amount) FROM ious) ORDER BY created_at DESC", nativeQuery = true)
+    List<IOU> findHighValueIOUs();
+
+    /**
+     * Searches for IOUs where the amount is less than the average amount of all IOUs.
+     *
+     * @return a list of IOUs that have a low value
+     */
+    // @Query(value = "SELECT * FROM ious WHERE amount <= (SELECT AVG(amount) FROM ious) ORDER BY created_at DESC", nativeQuery = true)
+    @Query("SELECT i FROM IOU i WHERE i.amount <= (SELECT AVG(i.amount) FROM IOU i) ORDER BY i.createdAt DESC")
+    List<IOU> findLowValueIOUs();
 }

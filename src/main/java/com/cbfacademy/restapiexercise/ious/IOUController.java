@@ -2,6 +2,7 @@ package com.cbfacademy.restapiexercise.ious;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,16 +24,54 @@ public class IOUController {
     }
 
     /**
-     * Retrieve a list of all IOUs.
+     * Retrieve a list of (optionally filtered) IOUs.
      *
+     * @param borrower The borrower's name.
+     * @param lender   The lender's name.
+     * @param value    The value of the IOU.
      * @return A list of all IOUs and HttpStatus OK if successful.
      */
     @GetMapping
-    public List<IOU> getAllIOUs() {
+    public List<IOU> getIOUs(@RequestParam(required = false) String borrower,
+            @RequestParam(required = false) String lender) {
         try {
-            List<IOU> ious = iouService.getAllIOUs();
+            if (StringUtils.hasText(borrower)) {
+                System.out.println("Borrower = " + borrower);
+                return iouService.getIOUsByBorrower(borrower);
+            } else if (StringUtils.hasText(lender)) {
+                System.out.println("Lender = " + lender);
+                return iouService.getIOUsByLender(lender);
+            } else {
+                return iouService.getAllIOUs();
+            }
+        } catch (RuntimeException exception) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
+        }
+    }
 
-            return ious;
+    /**
+     * Retrieve a list of high value IOUs.
+     *
+     * @return A list of all IOUs and HttpStatus OK if successful.
+     */
+    @GetMapping("/high")
+    public List<IOU> getHighValueIOUs() {
+        try {
+            return iouService.getHighValueIOUs();
+        } catch (RuntimeException exception) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
+        }
+    }
+
+    /**
+     * Retrieve a list of low value IOUs.
+     *
+     * @return A list of all IOUs and HttpStatus OK if successful.
+     */
+    @GetMapping("/low")
+    public List<IOU> getLowValueIOUs() {
+        try {
+            return iouService.getLowValueIOUs();
         } catch (RuntimeException exception) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
         }
@@ -109,36 +148,6 @@ public class IOUController {
             return ResponseEntity.noContent().build();
         } catch (NoSuchElementException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "IOU Not Found", exception);
-        } catch (RuntimeException exception) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
-        }
-    }
-
-    /**
-     * Get all IOUs by borrower.
-     *
-     * @param borrower The borrower's name.
-     * @return A list of IOUs.
-     */
-    @GetMapping("/?borrower={borrower}")
-    public List<IOU> getIOUsByBorrower(@RequestParam String borrower) {
-        try {
-            return iouService.getIOUsByBorrower(borrower);
-        } catch (RuntimeException exception) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
-        }
-    }
-
-    /**
-     * Get all IOUs by lender.
-     *
-     * @param lender The lender's name.
-     * @return A list of IOUs.
-     */
-    @GetMapping("/?lender={lender}")
-    public List<IOU> getIOUsByLender(@RequestParam String lender) {
-        try {
-            return iouService.getIOUsByLender(lender);
         } catch (RuntimeException exception) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
         }

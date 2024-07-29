@@ -56,4 +56,12 @@ public class IOUService {
     public List<IOU> getIOUsByLender(String lender) {
         return repository.findByLenderIgnoreCase(lender);
     }
+
+    public List<IOU> getHighValueIOUs() {
+        return repository.findHighValueIOUs();
+    }
+
+    public List<IOU> getLowValueIOUs() {
+        return repository.findLowValueIOUs();
+    }
 }
