@@ -122,6 +122,14 @@ Stop the application by pressing `Ctrl + C`
 2. Create an `IOUController` class that implements the endpoints below. Ensure your service class is injected as a dependency and apply the appropriate annotations
 3. Start your API and confirm there are no errors
 
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | /api/ious | Retrieve a list of (optionally filtered) IOUs |
+| GET | /api/ious/{id} | Retrieve a specific IOU by its ID |
+| POST | /api/ious | Create a new IOU |
+| PUT | /api/ious/{id} | Update an existing IOU by ID |
+| DELETE | /api/ious/{id} | Delete an IOU by ID |
+
 ## Exercise 3
 
 1. Create an `ious` package inside the test/java/com/cbfacademy/restapiexercise package
@@ -138,14 +146,6 @@ Stop the application by pressing `Ctrl + C`
    4. Check the value of the `borrower` parameter to determine whether to call the existing service method or the new, filtered, one
 2. Test the modified endpoint
 3. Commit your changes
-
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| GET | /api/ious | Retrieve a list of (optionally filtered) IOUs |
-| GET | /api/ious/{id} | Retrieve a specific IOU by its ID |
-| POST | /api/ious | Create a new IOU |
-| PUT | /api/ious/{id} | Update an existing IOU by ID |
-| DELETE | /api/ious/{id} | Delete an IOU by ID |
 
 ## Exercise 5
 
