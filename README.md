@@ -91,7 +91,7 @@ If successful, you should see output that ends similarly to the below
 ### Stop Application
 Stop the application by pressing `Ctrl + C`
 
-## Completing the Exercise
+## Exercise 1
 
 1. Create an ious package in the main restapiexercise package
 2. Create an `IOU` entity class that maps to the "ious" table and has the following fields:
@@ -107,10 +107,57 @@ Stop the application by pressing `Ctrl + C`
 7. Start your API with `./mvnw clean spring-boot:run` (if it's already running, restart it) and confirm there are no errors
 8. Check your database contains an "ious" table with the correct columns and data types
 
+## Exercise 2
+
+1. Create an IOUService class that accepts an IOURepository as a dependency and implements the following methods:
+    - `List<IOU> getAllIOUs()`
+    - `IOU getIOU(UUID id) throws NoSuchElementException`
+    - `IOU createIOU(IOU iou) throws IllegalArgumentException, OptimisticLockingFailureException`
+    - `IOU updateIOU(UUID id, IOU updatedIOU) throws NoSuchElementException`
+    - `void deleteIOU(UUID id)`
+2. Create an `IOUController` class that implements the endpoints below. Ensure your service class is injected as a dependency and apply the appropriate annotations
+3. Start your API and confirm there are no errors
+
+## Exercise 3
+
+1. Create an `ious` package inside the test/java/com/cbfacademy/restapiexercise package
+2. Download the [test suite](https://gist.github.com/cbfacademy-admin/be990e8da45fca196513f35f86ed3f52) and copy to the test ious package as IOUControllerTest.java
+3. Run the tests with `./mvnw test`
+4. Examine the results. Which tests fail? What reasons are given?
+
+## Exercise 4
+
+1. Create a new API endpoint to return IOUs for a specific borrower:
+   1. Create a method in your repository interface called `findByBorrower` that accepts a string `borrower` parameter.
+   2. Create a method in your service class called `getIOUsByBorrower`.
+   3. Extend the `getIOUS` method of your controller to accept an optional query string parameter, e.g.: `getIOUs(@RequestParam(required = false) String borrower)`
+   4. Check the value of the `borrower` parameter to determine whether to call the existing service method or the new, filtered, one
+2. Test the modified endpoint
+3. Commit your changes
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | /api/ious | Retrieve a list of (optionally filtered) IOUs |
+| GET | /api/ious/{id} | Retrieve a specific IOU by its ID |
+| POST | /api/ious | Create a new IOU |
+| PUT | /api/ious/{id} | Update an existing IOU by ID |
+| DELETE | /api/ious/{id} | Delete an IOU by ID |
+
+## Exercise 5
+
+1. Create a new API endpoint to return IOUs with above-average value:
+   1. Create a method in your repository interface called `findHighValueIOUs`.
+   2. Define a native `@Query` annotation that will return all IOUs with an above average value. Hint: create a subquery using the `AVG` function
+   3. Create a method in your service class called `getHighValueIOUs`.
+   4. Create a `getHighValueIOUS` method in your controller, mapped to the `/high` path.
+2. Test the new endpoint
+3. Commit your changes
+4. Create a new endpoint at `/low` to return IOUs that are below or equal to the average value. Implement the repository method using JPQL instead of SQL
+
 
 ## Testing the API
 
-You can test your endpoints using [Postman](https://www.postman.com) or your preferred REST client.
+You can test your endpoints using [Postman](https://www.postman.com) or your preferred REST client at http://localhost:8080/api/ious
 
 The JSON representation of an IOU that you'll get in responses or provide in the request body for `POST` and `PUT` requests will resemble the following:
 
