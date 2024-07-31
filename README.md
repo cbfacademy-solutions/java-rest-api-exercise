@@ -50,8 +50,12 @@ spring.config.import=optional:./local.properties
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/restapiexercise
-spring.datasource.username=root # Replace "root" with your db user, if applicable
-spring.datasource.password= # Specify your db user's password, if applicable
+
+# Replace "root" with your db user, if applicable
+spring.datasource.username=root
+
+# Specify your db user's password, if applicable. If your db user doesn't have a password set, delete the line below
+spring.datasource.password=
 ```
 
 ### Install Dependencies
