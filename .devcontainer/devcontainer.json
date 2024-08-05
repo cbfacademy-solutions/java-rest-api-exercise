@@ -6,12 +6,6 @@
 	"image": "mcr.microsoft.com/devcontainers/java:1-21-bullseye",
 
 	"features": {
-		"ghcr.io/devcontainers/features/java:1": {
-			"version": "none",
-			"installMaven": false,
-			"installGradle": false
-		},
-		"ghcr.io/devcontainers-contrib/features/ant-sdkman:2": {},
 		"ghcr.io/devcontainers-contrib/features/mysql-homebrew:1": {}
 	},
 
@@ -25,7 +19,8 @@
 		  // Add the IDs of extensions you want installed when the container is created.
 		  "extensions": [
 			"vscjava.vscode-java-pack",
-			"esbenp.prettier-vscode"
+			"esbenp.prettier-vscode",
+			"cweijan.vscode-mysql-client2"
 		  ]
 		}
 	  }
