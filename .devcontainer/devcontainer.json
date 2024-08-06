@@ -25,9 +25,6 @@
 		}
 	  },
 
-	// Update Homebrew
-	"postCreateCommand": "git -C /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/homebrew/homebrew-core fetch --unshallow && brew untap homebrew/core",
-
 	// Start MySQL
 	"postStartCommand": "mysql.server start"
 
