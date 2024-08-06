@@ -15,7 +15,8 @@
       "extensions": [
         "vscjava.vscode-java-pack",
         "esbenp.prettier-vscode",
-        "cweijan.vscode-mysql-client2"
+        "cweijan.vscode-mysql-client2",
+        "rangav.vscode-thunder-client"
       ]
     }
   },
