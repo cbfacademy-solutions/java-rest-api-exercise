@@ -61,10 +61,10 @@ spring.datasource.url=jdbc:mysql://localhost:3306/restapiexercise
 spring.datasource.username=root
 
 # Specify your database user's password, if applicable. If your database user doesn't have a password set, delete the line below
-spring.datasource.password=changemetoyourmysqlpassword
+spring.datasource.password=YOUR_MYSQL_PASSWORD
 ```
 
-7. Replace the username and password values with your database user's credentials. **IMPORTANT:** Ensure there are no spaces after the equals symbol when inputting your password.
+7. Replace the username and password values with your MySQL credentials. **IMPORTANT:** Ensure there are no spaces before or after the password.
 
 ### Run Application
 
