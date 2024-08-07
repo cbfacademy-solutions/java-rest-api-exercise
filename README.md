@@ -34,8 +34,9 @@ exit;
 
 ### Initialise Project
 1. Open this [pre-configured Initializr project](https://start.spring.io/#!type=maven-project&language=java&packaging=jar&jvmVersion=21&groupId=com.cbfacademy&artifactId=restapiexercise&name=REST%20API%20Exercise&description=RESTful%20API%20exercise%20using%20Spring%20Boot&packageName=com.cbfacademy.restapiexercise&dependencies=web,data-jpa,mysql,devtools). Review the configured settings, but do not make any changes. Click "Generate" to download a zipped project.
-2. Extract the downloaded zip file into your local repository. **IMPORTANT:** Do NOT open the zip file and drag-and-drop in Explorer or Finder as there are hidden files which may not be correctly copied across. Double-check that you have navigated to your local repository directory in your terminal.
-   - `tar -xfv [download directory]/restapiexercise.zip --strip=1 -C .`, e.g. `tar -xfv ~/Downloads/restapiexercise.zip --strip=1 -C .`
+2. Ensure that your local repository is the current working directory in the terminal, then extract the downloaded zip file. **IMPORTANT:** Do NOT unzip the archive in (macOS) Finder or (Windows) Explorer as the extracted files won't be correctly positioned.
+   - macOS / Git Bash: `tar -xvf [download directory]/restapiexercise.zip --strip=1 -C .`, e.g. `tar -xvf ~/Downloads/restapiexercise.zip --strip=1 -C .`
+   - Windows Command Prompt: `tar -xvf [download directory]\restapiexercise.zip --strip=1 -C %cd%`, e.g. `tar -xvf %USERPROFILE%\Downloads\restapiexercise.zip --strip=1 -C %cd%`
 3. Open your repository in VS Code
 4. Add the following values to src/main/resources/application.properties:
 
