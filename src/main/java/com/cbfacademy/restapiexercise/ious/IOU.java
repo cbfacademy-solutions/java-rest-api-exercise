@@ -22,6 +22,14 @@ public class IOU {
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
+	// NOTE: There have been a few concerns raised by students who have noticed that the id field isn't readable in the database, because it's stored in MySQL as a BINARY(16) column.
+	// It's possible for the field to be stored as a readable string, by using the following annotations:
+	// @GeneratedValue
+	// @JdbcTypeCode(Types.VARCHAR) or @JdbcType(VarcharJdbcType.class)
+	// However, this is not recommended as it is not portable and may cause issues with other databases.
+	// Another alternative is to use the `BIN_TO_UUID` function in MySQL to convert the binary value to a UUID, e.g.:
+	// `SELECT BIN_TO_UUID(id) AS id, amount, borrower, lender, created_at FROM ious;`
+	// This is also a good opportunity to discuss the pros and cons of storing binary values in a database.
 	private UUID id;
 
 	/**
